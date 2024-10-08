@@ -51,3 +51,4 @@ call [ebx + 0x20]      ; Call function through GOT entry
 ```
 
 ### fPIC and Inlining
+*future content*

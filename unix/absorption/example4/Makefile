@@ -16,7 +16,7 @@ libbaselibB.so: $(SRC_DIR)/baselibB.cxx $(SRC_DIR)/baselib.h Makefile
 	g++ -fPIC -shared -o $@ $<
 
 libsomelib.so: $(SRC_DIR)/somelib.cxx $(SRC_DIR)/somelib.h libbaselibA.a Makefile
-	g++ -shared -o $@ $< -L . -lbaselibA -Wl,-Bsymbolic
+	g++ -shared -o $@ $< -L . -lbaselibA -Wl,--exclude-libs,ALL
 
 clean:
 	rm -f libbaselibA.o libbaselibA.a libbaselibB.so libsomelib.so myapp
