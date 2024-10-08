@@ -4,7 +4,7 @@ In example 2 we saw that the order of linkage mattered to the print results of t
 
 ## Setup
 Modified setup of example 2:
-- add -`BSymbolic` to `somelib`
+- add `-BSymbolic` to the compilation of `somelib`
 - place `baselibB` first when linking to `myapp`
 
 ## Running
@@ -29,4 +29,4 @@ baselibA
 baselibA
 ```
 ----------------------
-While we fixed the call within `somelib` we cannot do so for `myapp`, as it cannot discriminate between the symbol from `somelib` and `baselibB`. 
+While we fixed the call within `somelib` we cannot do so for `myapp`, as it cannot discriminate between the symbol from `somelib` (proxy for `baselibA`) and `baselibB`.

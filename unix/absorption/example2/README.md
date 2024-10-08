@@ -2,7 +2,7 @@
 
 ## Setup
 Modified setup of example 1:
-- **ADD FPIC**: we add `fpic` to `baselibB` and `baselibA`, and not to `somelib.so` because it already implicitly uses `fpic` as it depends on `baselibA` which uses `fpic`.
+- **ADD FPIC**: we add ther `-fpic` to the compilation of `baselibB` and `baselibA`, and not to `somelib.so` because it already implicitly uses `fpic` as it depends on `baselibA` which uses `fpic` (might not be consistent for all compilers).
 
 ## Running
 `make execute`
@@ -29,9 +29,8 @@ Relocation section '.rela.text' at offset 0x4f0 contains 11 entries:
 000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 1
 ...
 ```
-Notice that the relocation type is different, allowing the library to be linked with a shared library.
-We can see that the output is `"baselibA"` twice. Looking at our app we expected `"baselibA"` and `"baselibB"`. 
-To explain this lets look at the loaded dynamic dependencies of myapp. Run `ldd myapp`
+Notice that the relocation type is different, allowing the library to be linked with a shared library. While our program runs and compiles one can see that the output is wrong, it printed `"baselibA"` twice. Looking at our app we expected `"baselibA"` and `"baselibB"`. 
+To explain this lets look at the loaded dynamic dependencies of `myapp`. Run `ldd myapp`
 ```
 linux-vdso.so.1 (0x00007ffdaed71000)
 libsomelib.so => cpp-library-symbol-management/unix/absorption/example2/./libsomelib.so (0x00007f3c7e30a000)
@@ -42,7 +41,7 @@ libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f3c7d7d9000)
 libc.so.6 => /lib64/libc.so.6 (0x00007f3c7d403000)
 /lib64/ld-linux-x86-64.so.2 (0x00007f3c7e50c000)
 ```
-The relevant shared objects are  `libsomelib.so` and `libbaselibB.so`. The latter is loaded last and this is the reason `"baselibB"` is not part of the output. This is because both libs contain the same symbol, the symbol from `baselibA` is exposed in `somelib`!
+The relevant shared objects are  `libsomelib.so` and `libbaselibB.so`. The latter is loaded last and this is the reason `"baselibB"` is not part of the output. This is because both libs contain the same symbol -- `basefunc`, the symbol from `baselibA` is exposed in `somelib`.
 
 Run `objdump -T libsomelib.so`:
 ```
@@ -66,7 +65,7 @@ DYNAMIC SYMBOL TABLE:
 0000000000201048 g    D  .bss   0000000000000000  Base        __bss_start
 00000000000008a5 g    DF .text  0000000000000032  Base        basefunc
 ```
-We can see the `basefunc` symbol (at the end) of shared object. The dynamic linker will go in order through all loaded libraries when looking up a symbol, each time it will start the process at the start of the list. It will go through `somelib` first and always find that symbol before ever reaching `baselibB`. Changing the linkin order will also change which library is atop of the list.
+We can see the `basefunc` symbol (at the end) of shared object. The dynamic linker will go in order through all loaded libraries when looking up a symbol, each time it will start the process at the start of the list. It will go through `somelib` first and always find that symbol before ever reaching `baselibB`. However we do not want the symbol from `baselibA` (through `somelib`) to be picked up twice, Changing the linkin order will also change which library is atop of the list and as a consequence change which symbol will be resolved.
 
 --------------------
 *As an exercise switch the position of linking of `somelib` and `baselibB` in:

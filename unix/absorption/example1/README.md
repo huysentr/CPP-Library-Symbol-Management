@@ -1,12 +1,11 @@
 # Example 1
 
 ## Setup
-We create a straightforward Makefile that will do the following, the source code used by the Makefile can be found in the folder *example_src_a*:
-
+We create a straightforward Makefile using the source code in *example_src_a*, we do the following:
 - We create two libraries `baselibA` and `baselibB`. They contain an identical function **symbol** `basefunc` that will print out their name.
 - `baselibA` will be compiled as **static** and `baselibB` will be compiled as **shared**
-- we will also create a **shared** library `somelib` that will have a unique symbol  `somefunc` that calls `basefunc` and as a dependency will use `baselibA`
-- Create an app that uses `somefunc`and `basefunc` and link to `somelib` and `baselibA`
+- We will also create a **shared** library `somelib` that will have a unique symbol  `somefunc` that calls `basefunc` and as a dependency will use `baselibA`
+- Create an app `myapp` that uses `somefunc`and `basefunc` and links to `somelib` and `baselibA`
 
 ## Running
 `make execute`
